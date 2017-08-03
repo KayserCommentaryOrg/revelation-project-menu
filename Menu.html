@@ -1,0 +1,105 @@
+<div class="menu">
+	{{#each menu as item}}
+		<span class="parent-menu-box">
+			<a href="{{makeUrl(item)}}" class="menu-item" data-active="{{isActive(item)}}">{{item.name}}</a>
+		</span>
+	{{/each}}
+</div>
+{{#if activeParentMenuItem && activeParentMenuItem.children}}
+<span class="menu child-menu">
+	{{#each activeParentMenuItem.children as child}}
+		<a href="{{makeUrl(activeParentMenuItem, child)}}" class="child-item">{{child.name}}</a>
+	{{/each}}
+</span>
+{{/if}}
+
+<style>
+a {
+	white-space: nowrap;
+	display: block;
+}
+
+.menu {
+	display: flex;
+	flex-wrap: wrap;
+
+	font-family: Verdana, sans-serif;
+	font-size: 16px;
+}
+
+.parent-menu-box {
+	margin: 4px;
+}
+
+.menu-item {
+	padding: 8px 16px;
+	background-color: #e0e0e0;
+	color: black;
+	border-radius: 2px;
+}
+.menu-item[data-active=true] {
+	font-weight: bold;
+}
+
+.child-menu {
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+.child-item {
+	padding: 4px 8px;
+	color: black;
+	background-color: #f5f5f5;
+
+	font-size: 14px;
+}
+</style>
+
+<script>
+const joinRoutes = items => items.map(item => item.route).join('')
+
+export default {
+	data() {
+		return {
+			root: '',
+			pathname: document.location.pathname,
+			menu: [{
+				name: 'Project Home',
+				route: '/'
+			}, {
+				name: 'Historical timeline',
+				route: '/timeline',
+			}, {
+				name: 'The structure of the book',
+				route: '/structure',
+				children: [{
+					name: 'Explanation',
+					route: '/explanation',
+				}, {
+					name: 'The book',
+					route: ''
+				}]
+			}]
+		}
+	},
+	computed: {
+		route: (root, pathname) => pathname.indexOf(root) === 0
+			? pathname.slice(root.length)
+			: pathname,
+		isPotentiallyActive: route => (...items) => {
+			return route.indexOf(joinRoutes(items)) === 0
+		},
+		isActive: (isPotentiallyActive, activeParentMenuItem) => (...items) => items.length === 1
+			? activeParentMenuItem === items[0]
+			: isPotentiallyActive(...items),
+		makeUrl: root => (...items) => root + joinRoutes(items),
+		activeParentMenuItem: (menu, isPotentiallyActive) => menu
+			.slice()
+			.sort((a, b) => b.route.length - a.route.length)
+			.find(item => isPotentiallyActive(item))
+	},
+	helpers: {
+		joinRoutes: (...items) => joinRoutes(items)
+	}
+}
+</script>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>
+			Testing the menu
+		</title>
+	</head>
+	<body>
+		<menu></menu>
+		<div>aw yeah</div>
+	</body>
+	<script src="./test-build.js"></script>
+	<script>
+		new Menu({
+			target: document.querySelector('menu'),
+			data: {
+				root: '/code/revelation-project-menu',
+				pathname: '/structure',
+			}
+		})
+	</script>
+</html>

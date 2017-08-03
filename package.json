@@ -1,0 +1,27 @@
+{
+  "name": "revelation-project-menu",
+  "version": "1.0.0",
+  "description": "",
+  "main": "menu.js",
+  "svelte": "Menu.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "svelte compile -f cjs -i Menu.html -o menu.js",
+    "build:test": "svelte compile -f umd -i Menu.html -o test-build.js",
+    "watch:test": "watch \"npm run build:test\" . -f watch-filter.js --interval=0.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KayserCommentaryOrg/revelation-project-menu.git"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/KayserCommentaryOrg/revelation-project-menu/issues"
+  },
+  "homepage": "https://github.com/KayserCommentaryOrg/revelation-project-menu#readme",
+  "devDependencies": {
+    "svelte-cli": "1.4.0",
+    "watch": "1.0.2"
+  }
+}
