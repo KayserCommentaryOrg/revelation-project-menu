@@ -6,9 +6,10 @@
   "svelte": "Menu.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "svelte compile -f cjs -i Menu.html -o menu.js",
+    "build": "svelte compile -f cjs -i Menu.html -o menu.js && npm run babel",
     "build:test": "svelte compile -f umd -i Menu.html -o test-build.js",
-    "watch:test": "watch \"npm run build:test\" . -f watch-filter.js --interval=0.5"
+    "watch:test": "watch \"npm run build:test\" . -f watch-filter.js --interval=0.5",
+    "babel": "babel menu.js --out-file menu.js --presets=es2015"
   },
   "repository": {
     "type": "git",
@@ -21,7 +22,10 @@
   },
   "homepage": "https://github.com/KayserCommentaryOrg/revelation-project-menu#readme",
   "devDependencies": {
+    "babel-cli": "6.24.1",
+    "babel-preset-es2015": "6.24.1",
     "svelte-cli": "1.4.0",
     "watch": "1.0.2"
-  }
+  },
+  "dependencies": {}
 }

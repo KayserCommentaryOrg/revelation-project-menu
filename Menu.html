@@ -1,14 +1,26 @@
 <div class="menu">
 	{{#each menu as item}}
 		<span class="parent-menu-box">
-			<a href="{{makeUrl(item)}}" class="menu-item" data-active="{{isActive(item)}}">{{item.name}}</a>
+			<a
+				href="{{makeUrl(item)}}"
+				class="menu-item"
+				data-active="{{isActive(item)}}"
+			>
+				{{item.name}}
+			</a>
 		</span>
 	{{/each}}
 </div>
 {{#if activeParentMenuItem && activeParentMenuItem.children}}
 <span class="menu child-menu">
 	{{#each activeParentMenuItem.children as child}}
-		<a href="{{makeUrl(activeParentMenuItem, child)}}" class="child-item">{{child.name}}</a>
+		<a
+			href="{{makeUrl(activeParentMenuItem, child)}}"
+			class="child-item"
+			data-active="{{isActive(activeParentMenuItem, child)}}"
+		>
+			{{child.name}}
+		</a>
 	{{/each}}
 </span>
 {{/if}}
@@ -53,10 +65,33 @@ a {
 
 	font-size: 14px;
 }
+.child-item[data-active=true] {
+	font-weight: bold;
+}
 </style>
 
 <script>
-const joinRoutes = items => items.map(item => item.route).join('')
+const flatmap = (array, fn) => {
+	const output = []
+	array.forEach(item => {
+		const additions = fn(item)
+		Array.isArray(additions) ? output.push(...additions) : output.push(additions)
+	})
+	return output
+}
+
+const joinRoutes = (...items) => items.map(item => item.route).join('')
+const removeTrailingSlash = route => route[route.length - 1] === '/'
+	? route.slice(0, route.length - 1)
+	: route
+const exactMatchIgnoringTrailingSlash = (routeA, routeB) =>
+	removeTrailingSlash(routeA) === removeTrailingSlash(routeB)
+
+const possibilities = menu => flatmap(menu, item => {
+	return item.children
+		? item.children.map(child => ({ route: joinRoutes(item, child), hierarchy: [item, child] }))
+		: { route: item.route, hierarchy: [ item ] }
+})
 
 export default {
 	data() {
@@ -68,13 +103,20 @@ export default {
 				route: '/'
 			}, {
 				name: 'Historical timeline',
-				route: '/timeline',
+				route: '/timeline/',
+				children: [{
+					name: 'Timeline',
+					route: ''
+				}, {
+					name: 'Table of dates',
+					route: 'table.html'
+				}]
 			}, {
 				name: 'The structure of the book',
-				route: '/structure',
+				route: '/structure/',
 				children: [{
 					name: 'Explanation',
-					route: '/explanation',
+					route: 'explanation.html',
 				}, {
 					name: 'The book',
 					route: ''
@@ -86,20 +128,17 @@ export default {
 		route: (root, pathname) => pathname.indexOf(root) === 0
 			? pathname.slice(root.length)
 			: pathname,
-		isPotentiallyActive: route => (...items) => {
-			return route.indexOf(joinRoutes(items)) === 0
+		possibleRoutes: menu => possibilities(menu),
+		activeMenuItems: (route, possibleRoutes) => {
+			const currentRoute = possibleRoutes.find(possibility => exactMatchIgnoringTrailingSlash(route, possibility.route))
+
+			return currentRoute && currentRoute.hierarchy
 		},
-		isActive: (isPotentiallyActive, activeParentMenuItem) => (...items) => items.length === 1
-			? activeParentMenuItem === items[0]
-			: isPotentiallyActive(...items),
-		makeUrl: root => (...items) => root + joinRoutes(items),
-		activeParentMenuItem: (menu, isPotentiallyActive) => menu
-			.slice()
-			.sort((a, b) => b.route.length - a.route.length)
-			.find(item => isPotentiallyActive(item))
+		isActive: activeMenuItems => (...items) => activeMenuItems && items.every(
+			(item, i) => activeMenuItems[i] && item.route === activeMenuItems[i].route
+		),
+		makeUrl: root => (...items) => root + joinRoutes(...items),
+		activeParentMenuItem: activeMenuItems => activeMenuItems && activeMenuItems[0]
 	},
-	helpers: {
-		joinRoutes: (...items) => joinRoutes(items)
-	}
 }
 </script>
