@@ -27,5 +27,7 @@
     "svelte-cli": "1.4.0",
     "watch": "1.0.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "svelte": "1.28.1"
+  }
 }
