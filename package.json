@@ -5,7 +5,7 @@
   "main": "menu.js",
   "svelte": "Menu.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Error: no test specified :-/\" && exit 0",
     "build": "svelte compile -f cjs -i Menu.html -o menu.js && npm run babel",
     "build:test": "svelte compile -f umd -i Menu.html -o test-build.js",
     "watch:test": "watch \"npm run build:test\" . -f watch-filter.js --interval=0.5",
