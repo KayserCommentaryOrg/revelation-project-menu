@@ -96,14 +96,14 @@ const possibilities = menu => flatmap(menu, item => {
 export default {
 	data() {
 		return {
-			root: '',
+			root: '/',
 			pathname: document.location.pathname,
 			menu: [{
 				name: 'Project Home',
-				route: '/'
+				route: ''
 			}, {
 				name: 'Historical timeline',
-				route: '/timeline/',
+				route: 'timeline/',
 				children: [{
 					name: 'Timeline',
 					route: ''
@@ -113,7 +113,7 @@ export default {
 				}]
 			}, {
 				name: 'The structure of the book',
-				route: '/structure/',
+				route: 'structure/',
 				children: [{
 					name: 'Explanation',
 					route: 'explanation.html',
